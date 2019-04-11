@@ -19,6 +19,18 @@ Height(Position P)
 	}
 }
 
+/*
+				k2
+			   /
+			  /
+			K1
+		 
+*/
+static Position SingleRotateWithLeft(Position K2)
+{
+
+}
+
 AvlTree MakeEmpty(AvlTree T)
 {
 	if (T == NULL)
@@ -57,6 +69,83 @@ AvlTree Insert(ElementType X, AvlTree T)
 			{
 				T = SingleRotateWithLeft(T);
 			}
+			else
+			{
+				T = DoubleRotateWithLeft(T);
+			}
 		}
+	}
+	else if (X > T->Element)
+	{
+		T->Right = Insert(X, T);
+		if (Height(T->Right) - Height(T->Left) == 2)
+		{
+			if (X > T->Right->Element)
+			{
+				T = SingleRotateWithRight(T);
+			}
+			else
+			{
+				T = DoubleRotateWithRight(T);
+			}
+		}
+	}
+
+	T->Height = Max(Height(T->Left), Height(T->Right)) + 1;
+	return T;
+}
+
+//非递归实现
+Position FindMax(AvlTree T)
+{
+	if (T == NULL)
+	{
+		return NULL;
+	}
+	while (T->Right != NULL)
+	{
+		T = T->Right;
+	}
+	return T;
+}
+
+
+Position FindMin(AvlTree T)
+{
+	if (T == NULL)//当搜索树的接点为空时候，直接返回空
+	{
+		return NULL;
+	}
+	//当某个节点的左子树为空的时候 ，直接返回该节点
+	//如果不加入这个判断，会产生这样一个问题，当左节点为空的时候，用递归调用，根据第一行判断，会直接返回空值
+	if (T->Left == NULL)
+	{
+		return T;
+	}
+	else
+	{
+		return FindMin(T->Left);//搜索T接点左侧子树的最小值，
+	}
+}
+
+Position Find(ElementType X, AvlTree T) {
+	if (T == NULL)
+		return NULL;
+	if ( X < T->Element)
+		return Find(X, T->Left);
+	else if ( X > T->Element)
+		return Find(X, T->Right);
+	else
+		return T;
+}
+
+AvlTree Delete(ElementType X, AvlTree T) {
+	Position P;
+	P = Find(X, T);
+	if ( P == NULL) //当搜寻的节点为空的时候
+		return T;
+	else //否则
+	{
+		
 	}
 }
