@@ -1,5 +1,7 @@
 #include "AvlTree.h"
 #include <stdio.h>
+#include <stdlib.h>
+
 
 typedef int ElementType;
 
@@ -19,30 +21,116 @@ Height(Position P)
 	}
 }
 
-/*
-				k2
-			   /
-			  /
-			K1
-		 
-*/
-static Position SingleRotateWithLeft(Position K2)
-{
-
-}
-
-AvlTree MakeEmpty(AvlTree T)
-{
-	if (T == NULL)
-	{
-		return NULL;
+static int Max(int a, int b) {
+	if (a < b) {
+		return b;
 	}
 	else
 	{
+		return a;
+	}
+}
+
+/*
+平衡二叉树在 K2 节点不平衡时候的操作
+					k2
+				  /   \
+				k1	   Z
+			  /    \
+			X		Y
+因为K1左子树高度比右子树高度大二。对K2,K1旋转后，
+K2左子树高度加减去1，K2右子树减去一，一加一减，正好平衡
+*/
+
+static Position SingleRotateWithLeft(Position K2)
+{
+	Position K1 = K2->Left;
+	K2->Left = K1->Right;
+	K1->Right = K2;
+
+	K2->Height = Max(K2->Left->Height, K2->Right->Height) + 1;
+	K1->Height = Max(K1->Left->Height, K1->Right->Height) + 1;
+	return K1;
+}
+/*
+
+			  K1
+
+		 ?			K2
+				  /   \
+				X	   K3
+					  / \
+					 Y	 Z
+
+			  K1
+
+		 ?			K3
+				  /   \
+				K2	   Z
+			  X	  Y
+*/
+static Position SingleRotateWithRight(Position K2)
+{
+	Position K3 = K2->Right;
+	K2->Right = K3->Left;
+	K3->Left = K2;
+
+	K2->Height = Max(K2->Left->Height, K2->Right->Height) + 1;
+	K3->Height = Max(K3->Left->Height, K3->Right->Height) + 1;
+	return K3;
+}
+
+/*
+This function can be called only if K3 has a left child,and K3's left child has a right child.
+Do the left-right double rotation. Update heights, then return new root.
+
+					 k3
+				  /    \
+				k1	     D
+			  /   \
+			A	   k2
+				  B  C
+在K3节点处，左子树高度位2，右子树高度为0，出现了失衡状态
+那么
+我么你可以先对K1,K2做一次右侧单旋操作，切换成标转左侧失衡状态，再做一次左侧单玄操作
+*/
+static Position DoubleRotateWithLeft(Position K3)
+{
+	// roate between K1 K2
+	K3->Left = SingleRotateWithRight(K3->Left);
+	// roate between K3 K2
+	return SingleRotateWithLeft(K3);
+}
+
+/*
+This function can be called only if K3 has a right child,and K3's right child has a left child.
+Do the right-left double rotation. Update heights, then return new root.
+
+					  k1
+				  /       \
+				D           k3	     
+						  /   \
+						k2     A	   
+					   B  C
+在K1节点处，左子树高度位0，右子树高度为2，出现了失衡状态
+那么
+我么你可以先对K1,K3做一次左侧侧单旋操作，切换成标转左侧失衡状态，再做一次左侧单玄操作
+*/
+static Position DoubleRotateWithRight(Position K1)
+{
+	K1->Right = SingleRotateWithLeft(K1->Right);
+	return SingleRotateWithRight(K1);
+}
+
+
+AvlTree MakeEmpty(AvlTree T)
+{
+	if (T != NULL){
 		MakeEmpty(T->Left);
 		MakeEmpty(T->Right);
 		free(T);
 	}
+	return NULL;
 }
 
 AvlTree Insert(ElementType X, AvlTree T)
@@ -53,6 +141,7 @@ AvlTree Insert(ElementType X, AvlTree T)
 		if (T == NULL)
 		{
 			printf("错误，内存分配失败！");
+			return NULL;
 		}
 		else
 		{
@@ -66,33 +155,9 @@ AvlTree Insert(ElementType X, AvlTree T)
 		if (Height(T->Left) - Height(T->Right) == 2)	//当插入完毕后，左子树高度和右子树的高度相差为2，就会有不平衡发生。
 		{
 			if (X < T->Left->Element)
-			{
-				T = SingleRotateWithLeft(T);
-			} 
+				T = SingleRotateWithLeft(T); 
 			else
-			{
-				T = DooubleRotageWithLeft(T);
-			}
-		}
-		else if (X >T->Element)
-		{
-			T->Right = Insert(X, T->Right);
-			if (Height(T->Left) - Height(T->Right) == 2)
-			{
-				if (X > T->Right->Element)
-					T = SingleRotateWithRight(T);
-				else
-					T = DoubleRotateWithRight(T);
-			}
-<<<<<<< HEAD
-			T->Height = Max(Height(T->Left), Height(T->Right)) + 1;
-			return T;
-=======
-			else
-			{
 				T = DoubleRotateWithLeft(T);
-			}
->>>>>>> 37c69a8ef05fd83ab590be1821f21e4d021a3715
 		}
 	}
 	else if (X > T->Element)
@@ -110,7 +175,6 @@ AvlTree Insert(ElementType X, AvlTree T)
 			}
 		}
 	}
-
 	T->Height = Max(Height(T->Left), Height(T->Right)) + 1;
 	return T;
 }
@@ -158,14 +222,41 @@ Position Find(ElementType X, AvlTree T) {
 	else
 		return T;
 }
-
+/*
+	如果待删除的节点是树叶，那么可以立即删除
+	如果节点有一个孩子，那么该节点绕过父节点后删除。
+	如果有两个孩子；一般的策略是用其右子树的最小的数据代替该节点的数据并且递归的删除那个节点，现在他是空的
+	因为右子树中最小的节点不可能有左孩子，所以，第二次删除的时候很容易
+*/
 AvlTree Delete(ElementType X, AvlTree T) {
-	Position P;
-	P = Find(X, T);
-	if ( P == NULL) //当搜寻的节点为空的时候
-		return T;
-	else //否则
+	Position tmpCell;
+	if (T == NULL) //当搜寻的节点为空的时候
+		return NULL;
+	else if (X < T->Element)
 	{
-		
+		T->Left = Delete(X, T->Left);
 	}
+	else if (X > T->Element)
+	{
+		T->Right = Delete(X, T->Right);
+	}
+	else if (T->Left && T->Right) //找到该节点， //有两个孩子
+	{
+		tmpCell = FindMin(T->Right);
+		T->Element = tmpCell->Element;
+		T->Right = Delete(T->Element, T->Right);
+	}
+	else //有一个孩子
+	{
+		tmpCell = T;
+		if (T->Left == NULL)
+		{
+			T = T->Right;
+		}
+		else if (T->Right == NULL) {
+			T = T->Left;
+		}
+		free(tmpCell);
+	}
+	return T;
 }

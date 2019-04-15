@@ -1,0 +1,7 @@
+﻿BTree.obj : error LNK2005: _Delete 已经在 AvlTree.obj 中定义
+BTree.obj : error LNK2005: _Find 已经在 AvlTree.obj 中定义
+BTree.obj : error LNK2005: _FindMax 已经在 AvlTree.obj 中定义
+BTree.obj : error LNK2005: _FindMin 已经在 AvlTree.obj 中定义
+BTree.obj : error LNK2005: _Insert 已经在 AvlTree.obj 中定义
+BTree.obj : error LNK2005: _MakeEmpty 已经在 AvlTree.obj 中定义
+C:\Users\cuiyemeng\source\repos\Data-Structure-And-Algorithm-C-\Debug\04.Tree.exe : fatal error LNK1169: 找到一个或多个多重定义的符号

@@ -1,4 +1,3 @@
-#pragma once
 #ifndef _AvlTree_H
 
 typedef ElementType;

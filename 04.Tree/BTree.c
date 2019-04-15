@@ -1,4 +1,5 @@
 #pragma once
+#include <stdlib.h>
 #include "BTree.h"
 
 SearchTree MakeEmpty(SearchTree T)
@@ -57,10 +58,14 @@ Position FindMax(SearchTree T)
 
 SearchTree Insert(ElementType X, SearchTree T)
 {
-	if (T ==NULL)
+	if (T == NULL)
 	{
 		/*创建并返回一个节点数*/
 		T = malloc(sizeof(struct TreeNode));
+		if (T == NULL)
+		{
+			return NULL;
+		}
 		T->Element = X;
 		T->Left = NULL;
 		T->Right = NULL;

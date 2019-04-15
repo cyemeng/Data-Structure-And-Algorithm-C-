@@ -130,6 +130,7 @@
   <ItemGroup>
     <ClCompile Include="AvlTree.c" />
     <ClCompile Include="BTree.c" />
+    <ClCompile Include="main.c" />
     <ClCompile Include="TreeNode.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

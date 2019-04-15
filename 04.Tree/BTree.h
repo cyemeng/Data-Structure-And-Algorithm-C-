@@ -1,4 +1,3 @@
-#pragma once
 #ifndef _BtreeNode_H
 #include <stdio.h>
 
