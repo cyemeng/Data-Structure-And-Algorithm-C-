@@ -1,6 +1,1 @@
-﻿  Graphic.c
-C:\Users\cuiyemeng\source\repos\Data-Structure-And-Algorithm-C-\Graphic\Graphic.c(146): warning C4098: “BFS”:“void”函数返回值
-Graphic.obj : error LNK2019: 无法解析的外部符号 _InitSqQueue，该符号在函数 _BFS 中被引用
-Graphic.obj : error LNK2019: 无法解析的外部符号 _EnQueue，该符号在函数 _BFS 中被引用
-Graphic.obj : error LNK2019: 无法解析的外部符号 _DeQueue，该符号在函数 _BFS 中被引用
-C:\Users\cuiyemeng\source\repos\Data-Structure-And-Algorithm-C-\Debug\Graphic.exe : fatal error LNK1120: 3 个无法解析的外部命令
+﻿
