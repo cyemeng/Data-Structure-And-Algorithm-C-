@@ -1,4 +1,10 @@
-﻿BTree.obj : error LNK2005: _Delete 已经在 AvlTree.obj 中定义
+﻿  AvlTree.c
+  BTree.c
+  main.c
+  TreeNode.c
+  正在编译...
+  正在生成代码...
+BTree.obj : error LNK2005: _Delete 已经在 AvlTree.obj 中定义
 BTree.obj : error LNK2005: _Find 已经在 AvlTree.obj 中定义
 BTree.obj : error LNK2005: _FindMax 已经在 AvlTree.obj 中定义
 BTree.obj : error LNK2005: _FindMin 已经在 AvlTree.obj 中定义
